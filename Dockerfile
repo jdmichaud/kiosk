@@ -71,6 +71,13 @@ RUN echo 'export PS1="`echo $PS1 | sed s/@.h/@${IMAGE_NAME}/g` "' >> /home/jedi/
 
 # Specific part of the docker file
 
+USER root
+
+# Install dependencies
+RUN apt-get install -y libcogl-gles2-dev
+
+USER jedi
+
 # Clone qt and build it
 # http://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_submodule_source_code
 RUN cd ~/ && \
@@ -85,6 +92,6 @@ RUN cd ~/ && \
     -nomake examples \
     -nomake tests \
     -nomake tests \
-    -confirm-license \
-    -no-gtkstyle && \
-  make -j4 
+    -confirm-license && \
+  make
+
