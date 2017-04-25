@@ -1,19 +1,13 @@
 #include <QGuiApplication>
-#include <QQmlEngine>
-#include <QQmlContext>
-#include <QQmlComponent>
+#include <QQuickView>
 
 int main(int argc, char *argv[])
 {
   QGuiApplication app(argc, argv);
 
-  QQmlEngine engine;
-  QQmlContext *objectContext = new QQmlContext(engine.rootContext());
-
-  QQmlComponent component(&engine, "main.qml");
-  QObject *object = component.create(objectContext);
-
-  // ... delete object and objectContext when necessary
+  QQuickView view;
+  view.setSource(QUrl::fromLocalFile("main.qml"));
+  view.show();
 
   return app.exec();
 }
