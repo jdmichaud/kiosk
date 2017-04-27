@@ -73,8 +73,29 @@ RUN echo 'export PS1="`echo $PS1 | sed s/@.h/@${IMAGE_NAME}/g` "' >> /home/jedi/
 
 USER root
 
-# Install dependencies
+# Install dependencies for openGL
 RUN apt-get install -y libcogl-gles2-dev
+
+# Install dependencies for Qt WebEngine
+RUN apt-get install -y \
+  libssl-dev \
+  libxcursor-dev \
+  libxcomposite-dev \
+  libxdamage-dev \
+  libxrandr-dev \
+  libdbus-1-dev \
+  libfontconfig1-dev \
+  libcap-dev \
+  libxtst-dev \
+  libpulse-dev \
+  libudev-dev \
+  libpci-dev \
+  libnss3-dev \
+  libasound2-dev \
+  libxss-dev \
+  libegl1-mesa-dev \
+  gperf \
+  bison
 
 USER jedi
 
@@ -84,7 +105,7 @@ RUN cd ~/ && \
   git clone https://code.qt.io/qt/qt5.git && \
   cd qt5 && \
   git checkout v5.8.0 && \
-  git submodule update --init && \
+  git submodule update --init --recursive && \
   ./configure \
     -developer-build \
     -debug \
@@ -92,6 +113,9 @@ RUN cd ~/ && \
     -nomake examples \
     -nomake tests \
     -nomake tests \
-    -confirm-license && \
-  make
+    -confirm-license
+RUN cd ~/qt5 && \
+  make module-qtbase && \
+  make module-qtwebengine
+
 
