@@ -73,6 +73,12 @@ RUN echo 'export PS1="`echo $PS1 | sed s/@.h/@${IMAGE_NAME}/g` "' >> /home/jedi/
 
 USER root
 
+#For vcb plugin
+RUN apt-get install -y \
+  libsm6 \
+  libice6 \
+  libxslt1.1
+
 # Install dependencies for openGL
 RUN apt-get install -y libcogl-gles2-dev
 
@@ -101,21 +107,24 @@ USER jedi
 
 # Clone qt and build it
 # http://wiki.qt.io/Building_Qt_5_from_Git#Getting_the_submodule_source_code
+#RUN cd ~/ && \
+#  git clone https://code.qt.io/qt/qt5.git && \
+#  cd qt5 && \
+#  git checkout v5.8.0 && \
+#  git submodule update --init --recursive && \
+#  ./configure \
+#    -developer-build \
+#    -debug \
+#    -opensource \
+#    -nomake examples \
+#    -nomake tests \
+#    -nomake tests \
+#    -confirm-license
+#RUN cd ~/qt5 && \
+#  make module-qtbase && \
+#  make module-qtwebengine
+
 RUN cd ~/ && \
-  git clone https://code.qt.io/qt/qt5.git && \
-  cd qt5 && \
-  git checkout v5.8.0 && \
-  git submodule update --init --recursive && \
-  ./configure \
-    -developer-build \
-    -debug \
-    -opensource \
-    -nomake examples \
-    -nomake tests \
-    -nomake tests \
-    -confirm-license
-RUN cd ~/qt5 && \
-  make module-qtbase && \
-  make module-qtwebengine
+  curl -sOL http://download.qt.io/official_releases/qt/5.8/5.8.0/qt-opensource-linux-x64-5.8.0.run
 
 

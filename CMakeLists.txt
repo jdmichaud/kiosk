@@ -19,8 +19,9 @@ set(CMAKE_AUTORCC ON)
 
 
 # Find the QtWebView library
-find_package(Qt5WebView REQUIRED)
 find_package(Qt5Gui REQUIRED)
+find_package(Qt5Quick REQUIRED)
+find_package(Qt5WebView REQUIRED)
 
 # Tell CMake to create the kiosk executable
 add_executable(kiosk 
@@ -29,4 +30,8 @@ add_executable(kiosk
 )
 
 # Use the Widgets module from Qt 5.
-target_link_libraries(kiosk Qt5::WebView Qt5::Gui)
+target_link_libraries(kiosk 
+	Qt5::Gui
+	Qt5::Quick
+	Qt5::WebView
+)
