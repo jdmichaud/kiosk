@@ -2,10 +2,14 @@
 #include <getopt.h>
 #include <iostream>
 
+#include <QtCore/QString>
 #include <QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QtWebView/QtWebView>
+#include <QtQml/QQmlContext>
 #include <QtDebug>
+
+#include "moc_KioskContext.cpp"
 
 #include "main.moc"
 
@@ -38,7 +42,7 @@ struct option longopts[] = {
    { 0, 0, 0, 0 }
 };
 
-void manage_options(int argc, char **argv, std::string url) {
+void manage_options(int argc, char **argv, QString &url) {
   // If no url is provided, the value is ""
   char c;
   while ((c = getopt_long(argc, argv, "vh", longopts, NULL)) != -1) {
@@ -71,11 +75,13 @@ void manage_options(int argc, char **argv, std::string url) {
 
 int main(int argc, char *argv[])
 {
-  std::string url = "";
+  KioskContext context;
+  QString url = "";
   manage_options(argc, argv, url);
   if (url == "") {
     url = "about:blank";
   }
+  context.setUrl(url);
 
   QGuiApplication app(argc, argv);
   QtWebView::initialize();
@@ -84,6 +90,7 @@ int main(int argc, char *argv[])
 
 
   QQuickView view;
+  view.rootContext()->setContextProperty("context", &context);
   view.setSource(QUrl("qrc:/main.qml"));
   view.show();
 
