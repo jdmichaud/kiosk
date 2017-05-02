@@ -17,6 +17,20 @@ set(CMAKE_AUTOMOC ON)
 # in the generated executable
 set(CMAKE_AUTORCC ON)
 
+# Make GCC stop on first error
+add_definitions(
+  -Wfatal-errors
+)
+
+# Use the appropriate standard library depending on the compiler selected
+# by the environement variable
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+# This is what we should do but because of this Ubuntu bug:
+# https://bugs.launchpad.net/ubuntu/+source/libc++/+bug/1610168 ...
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+# ... we have to do this
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif()
 
 # Find the QtWebView library
 find_package(Qt5Gui REQUIRED)
@@ -24,13 +38,15 @@ find_package(Qt5Quick REQUIRED)
 find_package(Qt5WebView REQUIRED)
 
 # Tell CMake to create the kiosk executable
-add_executable(kiosk 
+add_executable(kiosk
   resources/resources.qrc
   src/main.cpp
+  src/Interpreter.cpp
+  src/KioskContext.cpp
 )
 
 # Use the Widgets module from Qt 5.
-target_link_libraries(kiosk 
+target_link_libraries(kiosk
 	Qt5::Gui
 	Qt5::Quick
 	Qt5::WebView

@@ -1,17 +1,18 @@
 // http://doc.qt.io/qt-5/qtwebview-minibrowser-example.html
 #include <getopt.h>
+#include <unistd.h>
 #include <iostream>
 
 #include <QtCore/QString>
+#include "QtCore/QSocketNotifier"
 #include <QGuiApplication>
 #include <QtQuick/QQuickView>
 #include <QtWebView/QtWebView>
 #include <QtQml/QQmlContext>
 #include <QtDebug>
 
+#include "moc_Interpreter.cpp"
 #include "moc_KioskContext.cpp"
-
-#include "main.moc"
 
 #define VERSION "0.0.1"
 
@@ -75,24 +76,40 @@ void manage_options(int argc, char **argv, QString &url) {
 
 int main(int argc, char *argv[])
 {
-  KioskContext context;
+  // Retrieve parameters
   QString url = "";
   manage_options(argc, argv, url);
   if (url == "") {
     url = "about:blank";
   }
+
+  // Create context
+  KioskContext context;
   context.setUrl(url);
 
+  // Create interpreter
+  Interpreter interpreter;
+  URLCommand urlCommand(context);
+  interpreter.register_("url", &urlCommand);
+
+  // Create Application
   QGuiApplication app(argc, argv);
   QtWebView::initialize();
   QGuiApplication::setApplicationDisplayName(
     QCoreApplication::translate("main", "Kiosk"));
 
-
+  // Create View
   QQuickView view;
   view.rootContext()->setContextProperty("context", &context);
   view.setSource(QUrl("qrc:/main.qml"));
   view.show();
 
+  // Connect to stdin event
+  QSocketNotifier sn(STDIN_FILENO, QSocketNotifier::Read);
+  sn.setEnabled(true);
+  Interpreter::connect(&sn, SIGNAL(activated(int)), &interpreter, SLOT(readCommand()));
+
   return app.exec();
 }
+
+#include "main.moc"

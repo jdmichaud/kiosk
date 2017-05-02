@@ -10,17 +10,10 @@ class KioskContext : public QObject
 public:
   virtual ~KioskContext() {}
 
-  Q_INVOKABLE QString getUrl() const {
-    return m_url;
-  }
-
-  void setUrl(const QString &url) {
-    m_url = url;
-    emit urlChanged();
-  }
-
+  Q_INVOKABLE QString getUrl() const;
+  void setUrl(const QString &url);
 signals:
-    void urlChanged();
+  void urlChanged();
 
 private:
   QString m_url;
