@@ -13,7 +13,7 @@ void Interpreter::interpret(std::string line) {
     throw "Command has no prefix";
   }
   auto prefix = line.substr(0, found);
-  auto command = line.substr(found);
+  auto command = line.substr(found + 1);
   m_commands[prefix]->call(command);
 }
 
@@ -21,5 +21,5 @@ void Interpreter::readCommand()
 {
   std::string line;
   std::getline(std::cin, line);
-  std::cout << "read: " << line << std::endl;
+  interpret(line);
 }

@@ -15,6 +15,6 @@ WebView {
 
   Connections {
     target: context
-    onUrlChanged: console.log('url changed to', context)
+    onUrlChanged: console.log('url changed to', context.getUrl())
   }
 }
