@@ -9,12 +9,15 @@ WebView {
   width: Window.width
   height: Window.height
   onLoadingChanged: {
+    console.log('url changed to', context.getUrl())
     if (loadRequest.errorString)
       console.error(loadRequest.errorString);
   }
 
   Connections {
     target: context
-    onUrlChanged: console.log('url changed to', context.getUrl())
+    onUrlChanged: {
+      webview.url = context.getUrl()
+    }
   }
 }
