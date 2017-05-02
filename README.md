@@ -18,13 +18,18 @@ make
 # Usage
 
 ```
-./kiosk
+./kiosk http://www.youtube.com
+```
+
+You can change the url through the standard input. Just type:
+```
+url:http://www.mikiyakobayashi.com/
 ```
 
 # For development, you can use `entr` to automate the build
 
 ```
-echo ../kiosk/CMakeLists.txt | entr bash -c "clear && CC=/usr/bin/clang CXX=/usr/bin/clang cmake ../kiosk"
+echo ../kiosk/CMakeLists.txt | entr bash -c "clear && CC=/usr/bin/clang CXX=/usr/bin/clang++ cmake ../kiosk"
 find ../kiosk ! -name "CMakeLists.txt" | entr bash -c "clear && make"
 echo kiosk | entr bash -c "clear && ./kiosk"
 ```
