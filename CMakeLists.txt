@@ -37,8 +37,10 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Quick REQUIRED)
 find_package(Qt5WebView REQUIRED)
 
+set(EXE_NAME kiosk)
+
 # Tell CMake to create the kiosk executable
-add_executable(kiosk
+add_executable(${EXE_NAME}
   resources/resources.qrc
   src/main.cpp
   src/Interpreter.cpp
@@ -50,4 +52,9 @@ target_link_libraries(kiosk
 	Qt5::Gui
 	Qt5::Quick
 	Qt5::WebView
+)
+
+install(
+	TARGETS ${EXE_NAME}
+	RUNTIME DESTINATION bin
 )
