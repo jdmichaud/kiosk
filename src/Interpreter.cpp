@@ -10,11 +10,17 @@ void Interpreter::interpret(std::string line) {
   // Retrieve the prefix
   auto found = line.find_first_of(":");
   if (found == std::string::npos) {
-    throw "Command has no prefix";
+    std::cerr << "Invalid command" << std::endl;
+    return;
   }
   auto prefix = line.substr(0, found);
   auto command = line.substr(found + 1);
-  m_commands[prefix]->call(command);
+  auto it = m_commands.find(prefix);
+  if (it == m_commands.end()) {
+    std::cerr << "Unknown command: " << prefix << std::endl;
+    return;
+  }
+  it->second->call(command);
 }
 
 void Interpreter::readCommand()

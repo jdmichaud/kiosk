@@ -45,7 +45,7 @@ struct option longopts[] = {
 
 void manage_options(int argc, char **argv, QString &url) {
   // If no url is provided, the value is ""
-  char c;
+  int c;
   while ((c = getopt_long(argc, argv, "vh", longopts, NULL)) != -1) {
     switch (c) {
     case 0: /* getopt_long() set a variable, just keep going */
@@ -59,13 +59,15 @@ void manage_options(int argc, char **argv, QString &url) {
     case 1:
       break;
     case ':':   /* missing option argument */
-      std::cerr << argv[0] << "option `-" << optopt
+      std::cerr << "option '" << argv[optind - 1]
                 << "' requires an argument" << std::endl;
       break;
-    case '?':
-    default:    /* invalid option */
-      std::cerr << argv[0] << "option `-" << optopt
+    case '?':   /* invalid option */
+      std::cerr << "option `" << argv[optind - 1]
                 << "' is invalid: ignored" << std::endl;
+      break;
+    default:
+      std::cerr << "error parsing options" << std::endl;
       break;
     }
   }

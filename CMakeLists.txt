@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.1.0)
 project(kiosk)
 
 # Search for libraries below /
-set(CMAKE_PREFIX_PATH ~/Qt5.8.0/5.8/gcc_64/)
+set(CMAKE_PREFIX_PATH ~/Qt5.9.1/5.9.1/gcc_64/)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
