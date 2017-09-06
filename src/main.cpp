@@ -1,4 +1,7 @@
 // http://doc.qt.io/qt-5/qtwebview-minibrowser-example.html
+#include <unistd.h>
+#include <fcntl.h>
+
 #include <getopt.h>
 #include <unistd.h>
 #include <iostream>
@@ -32,21 +35,25 @@ int version() {
 }
 
 int help() {
-  std::cout << "Usage: ggrep [OPTION]... [URL]" << std::endl;
+  std::cout << "Usage: kiosk [OPTION]... [URL]" << std::endl;
+  std::cout << "  -v    return the version" << std::endl;
+  std::cout << "  -h    display this help" << std::endl;
+  std::cout << "  -c    read commands from the standard input" << std::endl;
   return 0;
 }
 
-int do_version, do_help, url_specified;
+int do_version, do_help, read_stdin;
 struct option longopts[] = {
    { "version", no_argument,       & do_version,    1   },
    { "help",    no_argument,       & do_help,       1   },
+   { "cli",     no_argument,       & read_stdin,    0   },
    { 0, 0, 0, 0 }
 };
 
 void manage_options(int argc, char **argv, QString &url) {
   // If no url is provided, the value is ""
   int c;
-  while ((c = getopt_long(argc, argv, "vh", longopts, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "vhc", longopts, NULL)) != -1) {
     switch (c) {
     case 0: /* getopt_long() set a variable, just keep going */
       break;
@@ -56,6 +63,10 @@ void manage_options(int argc, char **argv, QString &url) {
     case 'v':
       version();
       exit(0);
+    case 'c':
+      read_stdin = 1;
+      std::cout << "read_stdin:" << read_stdin << std::endl;
+      break;
     case 1:
       break;
     case ':':   /* missing option argument */
@@ -106,10 +117,13 @@ int main(int argc, char *argv[])
   view.setSource(QUrl("qrc:/main.qml"));
   view.show();
 
-  // Connect to stdin event
+  // If stdin is open, connect to stdin event
   QSocketNotifier sn(STDIN_FILENO, QSocketNotifier::Read);
-  sn.setEnabled(true);
-  Interpreter::connect(&sn, SIGNAL(activated(int)), &interpreter, SLOT(readCommand()));
+  if (read_stdin) {
+    std::cout << "reading standard input" << std::endl;
+    sn.setEnabled(true);
+    Interpreter::connect(&sn, SIGNAL(activated(int)), &interpreter, SLOT(readCommand()));
+  }
 
   return app.exec();
 }
